@@ -4,8 +4,8 @@ from src.domain.entities.base import BaseEntity
 
 
 @dataclass(eq=False)
-class ActivityEntity(BaseEntity):
-    name: str
+class PhoneEntity(BaseEntity):
+    number: str
 
     def to_dict(self):
-        return {"name": self.name}
+        return {"number": self.number}

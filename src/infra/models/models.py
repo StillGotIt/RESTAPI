@@ -1,40 +1,36 @@
 from sqlalchemy import Column, Integer, String, ForeignKey, Float, Table
 from sqlalchemy.orm import relationship
-from sqlalchemy.ext.declarative import declarative_base
-
 from src.infra.models.base import BaseSQLModel
 
 
-Base = declarative_base()
-
 organization_activity = Table(
-    'organization_activity',
-    Base.metadata,
-    Column('organization_id', Integer, ForeignKey('organizations.id')),
-    Column('activity_id', Integer, ForeignKey('activities.id'))
+    "organization_activity",
+    BaseSQLModel.metadata,
+    Column("organization_id", Integer, ForeignKey("organizations.id", ondelete="CASCADE"), primary_key=True),
+    Column("activity_id", Integer, ForeignKey("activities.id", ondelete="CASCADE"), primary_key=True),
 )
 
 
 class Organization(BaseSQLModel):
-    __tablename__ = 'organizations'  # noqa
+    __tablename__ = 'organizations'
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
     building_id = Column(Integer, ForeignKey('buildings.id'))
     building = relationship('Building', back_populates='organizations')
-    activities = relationship('Activity', secondary=organization_activity, back_populates='organizations')
+    activities = relationship('Activity', secondary=organization_activity, back_populates='organizations', lazy='selectin')
     phones = relationship('Phone', back_populates='organization', cascade='all, delete-orphan')
 
 
 class Phone(BaseSQLModel):
-    __tablename__ = 'phones'  # noqa
+    __tablename__ = 'phones'
     id = Column(Integer, primary_key=True)
     number = Column(String, nullable=False)
-    organization_id = Column(Integer, ForeignKey('organizations.id'), nullable=False)
+    organization_id = Column(Integer, ForeignKey('organizations.id'))
     organization = relationship('Organization', back_populates='phones')
 
 
 class Building(BaseSQLModel):
-    __tablename__ = 'buildings'  # noqa
+    __tablename__ = 'buildings'
     id = Column(Integer, primary_key=True)
     address = Column(String, nullable=False)
     latitude = Column(Float, nullable=False)
@@ -43,9 +39,9 @@ class Building(BaseSQLModel):
 
 
 class Activity(BaseSQLModel):
-    __tablename__ = 'activities'   # noqa
+    __tablename__ = 'activities'
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
-    parent_id = Column(Integer, ForeignKey('activities.id'))
+    parent_id = Column(Integer, ForeignKey('activities.id', ondelete="SET NULL"), nullable=True)
     children = relationship('Activity', backref='parent', remote_side=[id])
-    organizations = relationship('Organization', secondary=organization_activity, back_populates='activities')
+    organizations = relationship('Organization', secondary=organization_activity, back_populates='activities', lazy='selectin')
