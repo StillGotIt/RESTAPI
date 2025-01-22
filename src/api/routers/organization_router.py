@@ -18,7 +18,7 @@ from src.logic.repo_services.organization_service import OrganizationService
 router = APIRouter(prefix="/api", tags=["api"])
 
 
-@router.get("/organizations/")
+@router.get("/organizations/", description="Returns organizations")
 async def get(
     schema: OrganizationQuerySchema = Depends(get_organization_query_params),
 ) -> FullOutOrganizationSchema | None:
@@ -31,7 +31,7 @@ async def get(
     return result
 
 
-@router.get("/organizations/activities/")
+@router.get("/organizations/activities/", description="Returns organizations by activity they belong")
 async def get(schema: ActivityQuerySchema = Depends(get_activity_query_params)):
     service = OrganizationService(
         repository=OrganizationRepository(), async_client=AsyncPostgresClient()
@@ -47,7 +47,7 @@ async def get(schema: ActivityQuerySchema = Depends(get_activity_query_params)):
     return result
 
 
-@router.get("/organizations/buildings/")
+@router.get("/organizations/buildings/", description="Returns organizations by building they belong")
 async def get(schema: BuildingQuerySchema = Depends(get_building_query_params)):
     service = OrganizationService(
         repository=OrganizationRepository(), async_client=AsyncPostgresClient()

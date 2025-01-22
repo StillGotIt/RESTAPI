@@ -110,7 +110,7 @@ class OrganizationRepository:
     async def get_organizations_by_activity_tree(
         session: AsyncSession,
         data: dict[str, Any],
-        max_depth: int = 0,
+        max_depth: int = 3,
     ) -> [Organization | None]:
         query = text(
             """
