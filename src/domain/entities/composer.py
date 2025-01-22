@@ -12,12 +12,12 @@ class OrganizationComposerEntity(BaseEntity):
     activity_entities_list: list[ActivityEntity]
     organization_entity: OrganizationEntity
     building_entity: BuildingEntity
-    phone_entity: PhoneEntity
+    phones_entities_list: list[PhoneEntity]
 
     def to_dict(self):
         return {
             "organization": self.organization_entity.to_dict(),
             "activity": self.activity_entities_list,
             "building": self.building_entity.to_dict(),
-            "phone": self.phone_entity.to_dict(),
+            "phone": self.phones_entities_list,
         }

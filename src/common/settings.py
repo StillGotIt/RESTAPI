@@ -6,7 +6,6 @@ load_dotenv(find_dotenv(".env"))
 
 
 class ProjectSettings(BaseSettings):
-
     postgres_host: str = Field(alias="POSTGRES_HOST")
     postgres_port: int = Field(alias="POSTGRES_PORT")
     postgres_user: str = Field(alias="POSTGRES_USER")
