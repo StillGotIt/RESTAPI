@@ -81,7 +81,7 @@ async def bulk_generate(organizations_number: int):
 
 async def main():
     await create_tables()
-    await bulk_generate(10)
+    await bulk_generate(50)
 
 
 if __name__ == "__main__":
