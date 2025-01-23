@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query, HTTPException
 
 from src.common.converters.query_converters import (
     get_organization_query_params,
@@ -18,8 +18,19 @@ from src.logic.repo_services.organization_service import OrganizationService
 router = APIRouter(prefix="/api", tags=["api"])
 
 
+def get_api_key(api_key: str = Query(..., description="API key required")):
+    valid_api_keys = ["some_valid_api_key_213hj123hMEga_confidential"]
+
+    if api_key not in valid_api_keys:
+        raise HTTPException(status_code=403, detail="Invalid API key")
+
+    return api_key
+
+
+
 @router.get("/organizations/", description="Returns organizations")
 async def get(
+    api_key: str = Depends(get_api_key),
     schema: OrganizationQuerySchema = Depends(get_organization_query_params),
 ) -> FullOutOrganizationSchema | None:
     service = OrganizationService(
@@ -32,7 +43,9 @@ async def get(
 
 
 @router.get("/organizations/activities/", description="Returns organizations by activity they belong")
-async def get(schema: ActivityQuerySchema = Depends(get_activity_query_params)):
+async def get(
+        api_key: str = Depends(get_api_key),
+        schema: ActivityQuerySchema = Depends(get_activity_query_params)):
     service = OrganizationService(
         repository=OrganizationRepository(), async_client=AsyncPostgresClient()
     )
@@ -48,7 +61,9 @@ async def get(schema: ActivityQuerySchema = Depends(get_activity_query_params)):
 
 
 @router.get("/organizations/buildings/", description="Returns organizations by building they belong")
-async def get(schema: BuildingQuerySchema = Depends(get_building_query_params)):
+async def get(
+        api_key: str = Depends(get_api_key),
+        schema: BuildingQuerySchema = Depends(get_building_query_params)):
     service = OrganizationService(
         repository=OrganizationRepository(), async_client=AsyncPostgresClient()
     )
